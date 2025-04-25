@@ -1,0 +1,37 @@
+import numpy as np
+from scipy.optimize import newton
+
+def resolver_F(Mh, e, F0=1.0, tol=1e-10):
+    """
+    Resuelve la ecuación Mh = e * sinh(F) - F para F usando el método de Newton-Raphson.
+    
+    Parámetros:
+        Mh : float
+            Valor del miembro izquierdo de la ecuación.
+        e : float
+            Excentricidad o parámetro del problema.
+        F0 : float, opcional
+            Valor inicial para la iteración (por defecto: 1.0).
+        tol : float, opcional
+            Tolerancia para la convergencia (por defecto: 1e-10).
+    
+    Retorna:
+        float
+            Solución F que satisface la ecuación.
+    """
+    # Definimos la función y su derivada
+    def ecuacion(F):
+        return e * np.sinh(F) - F - Mh
+    
+    def derivada(F):
+        return e * np.cosh(F) - 1
+    
+    # Usamos el método de Newton-Raphson
+    F_sol = newton(ecuacion, F0, fprime=derivada, tol=tol)
+    return F_sol
+
+# Ejemplo con Mh=20 y e=21
+Mh = 2.0013
+e = 1.2156
+F_solucion = resolver_F(Mh, e)
+print(f"La solución para F es: {F_solucion:.10f}")

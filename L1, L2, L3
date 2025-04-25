@@ -1,0 +1,93 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+def encontrar_raices(m1, m2, rango=(-2, 2), puntos_prueba=1000, tol=1e-8):
+    """
+    Encuentra todas las raíces reales de la función f(ξ) en el intervalo especificado.
+    
+    Parámetros:
+    m1, m2: masas de los cuerpos (kg)
+    rango: tupla con el intervalo a evaluar (default: -2 a 2)
+    puntos_prueba: número de puntos iniciales para buscar raíces
+    tol: tolerancia para considerar raíces distintas
+    
+    Retorna:
+    Lista de raíces encontradas
+    """
+    pi2 = m2 / (m1 + m2)
+    pi1 = 1 - pi2
+    
+    def f(xi):
+        a = xi + pi2
+        b = xi + pi2 - 1
+        return (pi1 * a) / np.abs(a)**3 + (pi2 * b) / np.abs(b)**3 - xi
+    
+    def df(xi):
+        a = xi + pi2
+        b = xi + pi2 - 1
+        term1 = pi1 * (1/np.abs(a)**3 - 3*a**2/np.abs(a)**5)
+        term2 = pi2 * (1/np.abs(b)**3 - 3*b**2/np.abs(b)**5)
+        return term1 + term2 - 1
+ # Método de Newton-Raphson mejorado
+    def newton(f, df, x0, max_iter=100):
+        x = x0
+        for _ in range(max_iter):
+            fx = f(x)
+            if abs(fx) < 1e-12:
+                return x
+            dfx = df(x)
+            if abs(dfx) < 1e-14:
+                break
+            x -= fx / dfx
+        return x
+    
+    # Buscar raíces en el intervalo
+    xi_vals = np.linspace(rango[0], rango[1], puntos_prueba)
+    raices = []
+    
+    for xi in xi_vals:
+        root = newton(f, df, xi)
+        # Redondear para eliminar errores numéricos pequeños
+        root = round(root / tol) * tol
+        # Verificar si es una nueva raíz
+        if not any(abs(root - r) < tol for r in raices):
+            raices.append(root)
+    
+    # Filtrar raíces reales dentro del rango
+    raices = [r for r in raices if rango[0] <= r <= rango[1]]
+    raices = sorted(list(set(raices)))  # Eliminar duplicados
+
+ # Graficar para verificación visual
+    plt.figure(figsize=(10, 6))
+    x_plot = np.linspace(rango[0], rango[1], 1000)
+    y_plot = [f(x) for x in x_plot]
+    plt.plot(x_plot, y_plot, label='f(ξ)')
+    plt.axhline(0, color='red', linestyle='--', alpha=0.5)
+    for r in raices:
+        plt.axvline(r, color='green', linestyle=':', alpha=0.5, label=f'Raíz en ξ={r:.4f}')
+    plt.xlabel('ξ')
+    plt.ylabel('f(ξ)')
+    plt.title(f'Raíces de la función para m1={m1} kg, m2={m2} kg')
+    plt.legend()
+    plt.grid()
+    plt.show()
+    
+    return raices
+
+# Valores de entrada (ejemplo)
+m1 = 1.989e30    # Masa cuerpo primario (kg)
+m2 = 5.974e24 # Masa cuerpo secundario (kg)
+r12 = 149.6e6 # Distancia entre cuerpos (km)
+
+# Encontrar las raíces (usando la función del código anterior)
+raices = encontrar_raices(m1, m2)
+
+# Convertir raíces a distancias multiplicando por r12
+print("\nRaíces y sus posiciones correspondientes:")
+for i, xi in enumerate(raices, 1):
+    posicion = xi * r12
+    print(f"Raíz {i}:")
+    print(f"  ξ = {xi:.8f}")
+    print(f"  Posición = {posicion:.2f} km")
+    print(f"  (Distancia desde el cuerpo primario)")
+    print("-" * 50)

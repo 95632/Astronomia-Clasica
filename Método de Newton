@@ -1,0 +1,95 @@
+import numpy as np
+import matplotlib.pyplot as plt
+
+#Metodo de Newton:
+#x=valor de la semilla
+#cond=True
+#while cond:
+    #f=La expresion original (Evaluando x)
+    #fprima=derivada de la expresion (Evaluando x)
+    #x=x-f/fprima
+    #ratio=np.abs(f/fprima)
+    #if ratio>1e-9 (Tolerancia)
+        #cond=True
+    #else:
+        #cond=False
+#print(x)
+#Ejercicio #1 Capitulo 3:
+x=0
+cond=True
+while cond:
+    g=x**2-5*x+4-10*np.e**(np.sin(x))
+    gprima=2*x-5-10*np.cos(x)*np.e**(np.sin(x))
+    x=x-g/gprima
+    ratio=np.abs(g/gprima)
+    if ratio>1e-9:
+        cond=True
+    else:
+        cond=False
+
+print(x)
+
+#Ejercicio #2 Cap3:
+def p(a):
+    return np.tan(a)-np.tanh(a)
+a=np.linspace(0,6*np.pi,1000)
+p=p(a)
+#Verificando los ceros:
+plt.plot(a,p)
+plt.show()
+#Semilla 1:
+y1=0.1
+cond=True
+while cond:
+    f=np.tan(y1)-np.tanh(y1)
+    fprima=(1/np.cos(y1))**2+(1/np.cosh(y1))**2
+    y1=y1-f/fprima
+    ratio=np.abs(f/fprima)
+    if ratio>1e-9:
+        cond=True
+    else:
+        cond=False
+
+print(y1)
+
+y2=2
+cond=True
+while cond:
+    f=np.tan(y2)-np.tanh(y2)
+    fprima=(1/np.cos(y2))**2+(1/np.cosh(y2))**2
+    y2=y2-f/fprima
+    ratio=np.abs(f/fprima)
+    if ratio>1e-9:
+        cond=True
+    else:
+        cond=False
+
+print(y2)
+
+y3=6.8
+cond=True
+while cond:
+    f=np.tan(y3)-np.tanh(y3)
+    fprima=(1/np.cos(y3))**2+(1/np.cosh(y3))**2
+    y3=y3-f/fprima
+    ratio=np.abs(f/fprima)
+    if ratio>1e-9:
+        cond=True
+    else:
+        cond=False
+
+print(y3)
+
+y4=10
+cond=True
+while cond:
+    f=np.tan(y4)-np.tanh(y4)
+    fprima=(1/np.cos(y4))**2+(1/np.cosh(y4))**2
+    y4=y4-f/fprima
+    ratio=np.abs(f/fprima)
+    if ratio>1e-9:
+        cond=True
+    else:
+        cond=False
+
+print(y4)
